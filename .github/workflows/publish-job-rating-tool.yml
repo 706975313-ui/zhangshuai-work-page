@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "release-parts/job-rating-tool.zip.part005"
+      - ".github/workflows/publish-job-rating-tool.yml"
 
 permissions:
   contents: write
@@ -15,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Rebuild download package
         shell: bash
-        run: cat release-parts/job-rating-tool.zip.part* > "岗位星级评定自动填表.zip"
+        run: cat release-parts/job-rating-tool.zip.part* > job-rating-autofill.zip
       - name: Create or update release
         shell: bash
         env:
@@ -23,4 +24,4 @@ jobs:
         run: |
           gh release view job-rating-tool-v1 >/dev/null 2>&1 ||
             gh release create job-rating-tool-v1 --title "岗位星级评定自动填表" --notes "岗位星级评定自动填表离线版"
-          gh release upload job-rating-tool-v1 "岗位星级评定自动填表.zip" --clobber
+          gh release upload job-rating-tool-v1 job-rating-autofill.zip --clobber
