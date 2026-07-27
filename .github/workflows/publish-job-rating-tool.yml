@@ -1,0 +1,26 @@
+name: Publish job rating tool
+
+on:
+  push:
+    paths:
+      - "release-parts/job-rating-tool.zip.part005"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild download package
+        shell: bash
+        run: cat release-parts/job-rating-tool.zip.part* > "岗位星级评定自动填表.zip"
+      - name: Create or update release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view job-rating-tool-v1 >/dev/null 2>&1 ||
+            gh release create job-rating-tool-v1 --title "岗位星级评定自动填表" --notes "岗位星级评定自动填表离线版"
+          gh release upload job-rating-tool-v1 "岗位星级评定自动填表.zip" --clobber
