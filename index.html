@@ -49,8 +49,8 @@
         <p>从一线工作中来，也为一线工作服务。</p>
       </div>
       <div class="container work-gallery">
-        <figure class="work-card"><img src="assets/risheng-app.png" alt="日升程序主界面"><span class="image-zoom" aria-hidden="true"><img src="assets/risheng-app.png" alt=""></span><figcaption><strong>日升</strong><span>日计划驱动的工勤表格助手</span></figcaption></figure>
-        <figure class="work-card"><img src="assets/job-rating-app.png" alt="岗位星级评定自动填表程序主界面"><span class="image-zoom" aria-hidden="true"><img src="assets/job-rating-app.png" alt=""></span><figcaption><strong>岗位星级评定自动填表</strong><span>智能识别与自动汇总的离线填表工具</span></figcaption></figure>
+        <figure class="work-card"><img class="work-screen" src="assets/risheng-app.png" alt="日升程序主界面"><figcaption><strong>日升</strong><span>日计划驱动的工勤表格助手</span></figcaption></figure>
+        <figure class="work-card"><img class="work-screen" src="assets/job-rating-app.png" alt="岗位星级评定自动填表程序主界面"><figcaption><strong>岗位星级评定自动填表</strong><span>智能识别与自动汇总的离线填表工具</span></figcaption></figure>
       </div>
     </section>
 
@@ -87,5 +87,30 @@
   </main>
 
   <footer><div class="container footer-inner"><span>张帅的工作页面</span><span>富文路桥工区</span></div></footer>
+  <div id="work-preview" class="work-preview" aria-hidden="true"><img src="" alt=""></div>
+  <script>
+    (() => {
+      const preview = document.getElementById('work-preview');
+      const previewImage = preview.querySelector('img');
+      const screens = document.querySelectorAll('.work-screen');
+      const showPreview = (screen) => {
+        if (window.innerWidth <= 1050) return;
+        const bounds = screen.getBoundingClientRect();
+        const previewWidth = Math.min(window.innerWidth * .42, 720);
+        const gap = 24;
+        previewImage.src = screen.currentSrc || screen.src;
+        previewImage.alt = screen.alt;
+        preview.style.width = `${previewWidth}px`;
+        preview.style.left = `${window.innerWidth - bounds.right >= previewWidth + gap ? bounds.right + gap : Math.max(gap, bounds.left - previewWidth - gap)}px`;
+        preview.classList.add('is-visible');
+      };
+      const hidePreview = () => preview.classList.remove('is-visible');
+      screens.forEach((screen) => {
+        screen.addEventListener('pointerenter', () => showPreview(screen));
+        screen.addEventListener('pointerleave', hidePreview);
+      });
+      window.addEventListener('resize', hidePreview);
+    })();
+  </script>
 </body>
 </html>
