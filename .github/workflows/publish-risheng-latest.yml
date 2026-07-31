@@ -1,0 +1,26 @@
+name: Publish Risheng latest
+
+on:
+  push:
+    paths:
+      - "release-parts/risheng-latest.zip.part010"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild latest package
+        shell: bash
+        run: cat release-parts/risheng-latest.zip.part* > risheng-latest.zip
+      - name: Create or update release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view risheng-latest-v1 >/dev/null 2>&1 ||
+            gh release create risheng-latest-v1 --title "日升最新版" --notes "日升离线工具最新版本"
+          gh release upload risheng-latest-v1 risheng-latest.zip --clobber
