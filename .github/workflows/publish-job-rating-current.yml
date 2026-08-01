@@ -1,0 +1,26 @@
+name: Publish current job rating download
+
+on:
+  push:
+    paths:
+      - "release-parts/job-rating-current.zip.part003"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild current package
+        shell: bash
+        run: cat release-parts/job-rating-current.zip.part* > job-rating-autofill.zip
+      - name: Update release download
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view job-rating-tool-v1 >/dev/null 2>&1 ||
+            gh release create job-rating-tool-v1 --title "Job rating auto-fill" --notes "Offline tool current version"
+          gh release upload job-rating-tool-v1 job-rating-autofill.zip --clobber
