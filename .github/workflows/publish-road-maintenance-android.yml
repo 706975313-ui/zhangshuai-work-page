@@ -1,0 +1,24 @@
+name: Publish road maintenance Android app
+
+on:
+  push:
+    paths:
+      - "release-assets/road-maintenance-2.6.9.apk"
+      - ".github/workflows/publish-road-maintenance-android.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create or update Android release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view road-maintenance-android-v2.6.9 >/dev/null 2>&1 ||
+            gh release create road-maintenance-android-v2.6.9 --title "路桥工区管理 2.6.9" --notes "Android 安装包"
+          gh release upload road-maintenance-android-v2.6.9 release-assets/road-maintenance-2.6.9.apk --clobber
